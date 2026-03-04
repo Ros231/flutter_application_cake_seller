@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_cake_seller/models/cake_shop_info.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CakeShopDetail extends StatefulWidget {
@@ -30,6 +32,13 @@ class _CakeShopDetailState extends State<CakeShopDetail> {
     )) {
       throw Exception('Could not launch $url');
     }
+  }
+
+  MapController? mapController;
+
+  void initState() {
+    super.initState();
+    mapController = MapController();
   }
 
   @override
@@ -134,6 +143,57 @@ class _CakeShopDetailState extends State<CakeShopDetail> {
                           },
                           leading: Icon(FontAwesomeIcons.facebook),
                           title: Text(widget.cakeShopdetail!.facebook!),
+                          ),
+
+                          SizedBox(height: 10,),
+
+                          Container(
+                            height: 300,
+                            width: MediaQuery.of(context).size.width,
+                            child: FlutterMap(
+                              mapController: mapController,
+                              options: MapOptions(
+                                initialCenter: LatLng
+                                  (
+                                    double.parse(widget.cakeShopdetail!.latitude!),
+                                    double.parse(widget.cakeShopdetail!.longitude!),
+                                  ),
+                                  initialZoom: 15,
+                              ),
+                              children: [
+                                TileLayer(
+                                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName: 'com.example.app',
+                                ),
+                                MarkerLayer(
+                                markers: [
+                                  Marker(point: LatLng(
+                                  double.parse(widget.cakeShopdetail!.latitude!), 
+                                  double.parse(widget.cakeShopdetail!.longitude!),
+                                  ), 
+                                  child: InkWell(
+                                    onTap: (){
+                                      _launchInBrowser(
+                                        Uri.parse('https://www.google.com/maps/search/?api=1&query=${widget.cakeShopdetail!.latitude},${widget.cakeShopdetail!.longitude}')
+                                        );
+                                    },
+                                    child: Icon(
+                                      Icons.location_pin,
+                                    ),
+                                  ))],
+                                  ),
+                                RichAttributionWidget(attributions: [
+                                  TextSourceAttribution(
+                                    '© OpenStreetMap contributors',
+                                    onTap: (){
+                                      _launchInBrowser(
+                                        Uri.parse('https://www.openstreetmap.org/copyright'),
+                                      );
+                                    },
+                                  )
+                                ])
+                              ],
+                            ),
                           ),
                       ],
                     ),
