@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_application_cake_seller/models/cake_shop_info.dart';
+import 'package:flutter_application_cake_seller/views/cake_shop_detail.dart';
 class CakeShop extends StatefulWidget {
   const CakeShop({super.key});
 
@@ -170,7 +171,11 @@ class _CakeShopState extends State<CakeShop> {
                 },
                 itemBuilder: (context, index) {
                   return ListTile(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => CakeShopDetail(cakeShopdetail: cakeShop[index])),
+                      );
+                    },
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
@@ -180,7 +185,7 @@ class _CakeShopState extends State<CakeShop> {
                     ),
                     title: Text(cakeShop[index].name!),
                     subtitle: Text(cakeShop[index].phone!),
-                    trailing: Icon(Icons.arrow_forward_ios),
+                    trailing: Icon(Icons.info),
                   );
                 },
               ),
